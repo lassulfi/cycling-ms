@@ -26,7 +26,7 @@ const defaultConfig = {
     projects: [{
         ...defaultConfig,
         testEnvironment: "node",
-        displayName: "backend",
+        displayName: "cycling-ms",
         collectCoverageFrom: [
           "src/",
           "!server/index.js",

@@ -14,6 +14,18 @@ export class Athlete {
 
     changeTeam(team) {
         this.#team = team
+        
+        return this;
+    }
+
+    removeTeam(team) {
+        if (this.#team.id.getValue() !== team.id.getValue()) {
+            throw new Error("Invalid team")
+        }
+        
+        this.#team = null
+
+        return this
     }
 
     get id() {

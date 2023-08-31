@@ -11,11 +11,14 @@ export class Team extends TeamID {
     }
 
     addAthlete(athlete) {
-        return this.#athletes.push(athlete)
+        this.#athletes.push(athlete)
+
+        return this
     }
 
     removeAthlete(athlete) {
-        return this.#athletes.filter(a => a.id.getValue() !== athlete.id.getValue())
+        this.#athletes = this.#athletes.filter(a => a.id.getValue() !== athlete.id.getValue())
+        return this
     }
 
     get name() {

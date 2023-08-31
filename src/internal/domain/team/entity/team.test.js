@@ -50,6 +50,6 @@ describe("# Team entity unit tests", () => {
 
         team.removeAthlete(athlete)
 
-        expect(team.athletes.length).toStrictEqual(1)
+        expect(team.athletes.length).toStrictEqual(0)
     })
 })
