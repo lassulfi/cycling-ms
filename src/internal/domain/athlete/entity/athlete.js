@@ -1,10 +1,12 @@
 export class Athlete {
+    #id
     #name
     #country
     #birthday
     #team
 
-    constructor({name, country, birthday}) {
+    constructor({id, name, country, birthday}) {
+        this.#id = id
         this.#name = name
         this.#country = country
         this.#birthday = birthday
@@ -12,6 +14,10 @@ export class Athlete {
 
     changeTeam(team) {
         this.#team = team
+    }
+
+    get id() {
+        return this.#id
     }
 
     get name() {
