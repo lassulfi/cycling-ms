@@ -35,6 +35,10 @@ export class Birthday {
     }
 
     isValid() {
+        if (this.#year < 0) {
+            throw new Error("Invalid year")
+        } 
+
         if (this.#month < 1 || this.#month > 12) {
             throw new Error("Invalid month")
         }
@@ -52,7 +56,7 @@ export class Birthday {
         }
 
         if (this.#day > daysInMonth[this.#month - 1]) {
-            throw new Error("invalid day for the given month")
+            throw new Error("Invalid day for the given month")
         }
     }
 }
