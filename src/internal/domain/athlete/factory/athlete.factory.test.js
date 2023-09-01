@@ -8,7 +8,7 @@ describe("# Athlete factory unit tests", () => {
         const { id, name, country, birthday: { day, month, year } } = mockData();
 
         const athlete = AthleteFactory.newAthlete({
-            id, name, country, birhtday: {
+            id, name, country, birthday: {
                 day, month, year
             }
         })
