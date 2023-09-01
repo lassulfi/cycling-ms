@@ -1,5 +1,5 @@
 import { describe, it, expect, jest, beforeEach, afterEach } from "@jest/globals"
-import { CreateAthleteUseCase } from "./create.athlete.js"
+import { CreateAthleteUseCase } from "./create.athlete.usecase.js"
 
 let input
 
@@ -37,6 +37,17 @@ describe("# Create Athlete Use Case", () => {
         expect(output).toStrictEqual({
             id: expect.any(String)
         })
+        expect(createSpy).toBeCalled()
+    })
+
+    it("should not create athlete if error", async () => {
+        const repository = MockAthleteRepository();
+
+        const useCase = new CreateAthleteUseCase({ athleteRepository: repository });
+
+        const createSpy = jest.spyOn(repository, "create").mockRejectedValue(new Error("Database offline"))
+
+        await expect(useCase.execute(input)).rejects.toThrow(new Error("Error while creating an athlete: Database offline"))
         expect(createSpy).toBeCalled()
     })
 })
