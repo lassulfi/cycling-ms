@@ -16,6 +16,54 @@ describe("# Athlete entity unit tests", () => {
         expect(athlete.birthday).toStrictEqual(expectedBirthday)
     })
 
+    it("should change a name", () => {
+        const { name, country, birthday } = mockData();
+        
+        const athlete = new Athlete({ name, country: country, birthday: birthday });
+        expect(athlete).toBeDefined()
+        expect(athlete.name).toStrictEqual(name)
+        expect(athlete.country).toStrictEqual(country)
+        expect(athlete.birthday).toStrictEqual(birthday)
+        
+        const expectedName = "Updated name"
+
+        athlete.changeName(expectedName)
+
+        expect(athlete.name).toStrictEqual(expectedName)
+    })
+
+    it("should change country", () => {
+        const { name, country, birthday } = mockData();
+        
+        const athlete = new Athlete({ name, country: country, birthday: birthday });
+        expect(athlete).toBeDefined()
+        expect(athlete.name).toStrictEqual(name)
+        expect(athlete.country).toStrictEqual(country)
+        expect(athlete.birthday).toStrictEqual(birthday)
+
+        const expectedCountry = "updated country"
+
+        athlete.changeCountry(expectedCountry)
+
+        expect(athlete.country).toStrictEqual(expectedCountry)
+    })
+
+    it("should change birthday", () => {
+        const { name, country, birthday } = mockData();
+        
+        const athlete = new Athlete({ name, country: country, birthday: birthday });
+        expect(athlete).toBeDefined()
+        expect(athlete.name).toStrictEqual(name)
+        expect(athlete.country).toStrictEqual(country)
+        expect(athlete.birthday).toStrictEqual(birthday)
+
+        const expectedBirthday = new Date(2023, 1 - 1, 1)
+
+        athlete.changeBirthday(expectedBirthday)
+        
+        expect(athlete.birthday).toStrictEqual(expectedBirthday)
+    })
+
     it("should change a team", () => {
         const team = new Team({id: TeamID.from("123"), name: "Astana"});
 

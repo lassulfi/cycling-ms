@@ -14,6 +14,10 @@ export class Birthday {
         this.#date = new Date(this.#year, this.#month - 1, this.#day)
     }
 
+    static newBirthday({day, month, year}) {
+        return new Birthday({day, month, year})
+    }
+
     get day() {
         return this.#day
     }
