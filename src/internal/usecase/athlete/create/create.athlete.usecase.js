@@ -17,7 +17,7 @@ export class CreateAthleteUseCase {
 
             output = { id: athlete.id.getValue() }
         } catch (error) {
-            throw error
+            throw new Error(`Error while creating an athlete: ${error.message}`)
         }
         
         return output

@@ -12,10 +12,28 @@ export class Athlete {
         this.#birthday = birthday
     }
 
+    changeName(name) {
+        this.#name = name
+
+        return this
+    }
+
+    changeCountry(country) {
+        this.#country = country
+
+        return this
+    }
+
     changeTeam(team) {
         this.#team = team
         
         return this;
+    }
+
+    changeBirthday(birthday) {
+        this.#birthday = birthday
+
+        return this
     }
 
     removeTeam(team) {
