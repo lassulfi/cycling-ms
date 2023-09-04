@@ -19,11 +19,11 @@ export class CreateTeamUseCase {
                 
                 for (const athlete of athletes) {
                     try {
-                        team.addAthlete(athlete)
-
-                        await this.#athleteRepository.update(athlete)
-
                         athlete.changeTeam(team)
+                        
+                        await this.#athleteRepository.update(athlete)
+                        
+                        team.addAthlete(athlete)
                     } catch (error) {
                         throw error
                     }
