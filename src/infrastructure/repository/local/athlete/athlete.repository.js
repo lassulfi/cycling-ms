@@ -20,7 +20,7 @@ export class AthleteRepository {
     findOne({id}) {
         return new Promise((resolve, reject) => {
             try {
-                const athletesById = this._listAthletesById(id)
+                const athletesById = this.#listAthletesById(id)
 
                 resolve(athletesById[0])
             } catch (error) {
@@ -29,7 +29,7 @@ export class AthleteRepository {
         })
     }
 
-    _listAthletesById(id) {
+    #listAthletesById(id) {
         const athletesById = this.#athleteDB.filter(a => a.id === id)
 
         if (!athletesById.length) throw new Error(`Athlete ID "${id.getValue()}" not found`)
@@ -39,7 +39,7 @@ export class AthleteRepository {
     update(athlete) {
         return new Promise((resolve, reject) => {
             try {
-                const athletesById = this._listAthletesById(athlete.id)
+                const athletesById = this.#listAthletesById(athlete.id)
 
                 const entity = athletesById[0];
                 entity.changeName(athlete.name)
@@ -63,6 +63,16 @@ export class AthleteRepository {
                 const count = this.#athleteDB.length
 
                 resolve(count)
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    findAll() {
+        return new Promise((resolve, reject) => {
+            try {
+                resolve(this.#athleteDB)
             } catch (error) {
                 reject(error)
             }

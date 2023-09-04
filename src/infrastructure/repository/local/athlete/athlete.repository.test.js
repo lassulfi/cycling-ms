@@ -74,35 +74,95 @@ describe("# Athlete repository unit tests", () => {
         it("should update an athlete", async () => {
             const repository = new AthleteRepository()
 
-            const athlete = AthleteFactory.newAthlete({
-                name: "Athlete 1",
-                country: "Country 1",
-                birthday: {
-                    day: 1,
-                    month: 1,
-                    year: 2023,
-                },
-            })
+            const athletes = [
+                AthleteFactory.newAthlete({
+                    name: "Athlete 1",
+                    country: "Country 1",
+                    birthday: {
+                        day: 1,
+                        month: 1,
+                        year: 2021,
+                    },
+                }),
+                AthleteFactory.newAthlete({
+                    name: "Athlete 2",
+                    country: "Country 2",
+                    birthday: {
+                        day: 2,
+                        month: 2,
+                        year: 2022,
+                    },
+                }),
+                AthleteFactory.newAthlete({
+                    name: "Athlete 3",
+                    country: "Country 3",
+                    birthday: {
+                        day: 3,
+                        month: 3,
+                        year: 2023,
+                    },
+                })
+            ]
 
-            await repository.create(athlete)
+            for(const athlete of athletes) {
+                await repository.create(athlete)
+            }
 
-            await expect(repository.count()).resolves.toBe(1)
+            await expect(repository.count()).resolves.toBe(3)
 
-            const athleteToUpdate = new Athlete({
-                id: athlete.id,
+            let athleteToUpdate = new Athlete({
+                id: athletes[0].id,
                 name: "Updated Athlete 1",
                 country: "Updated Country 1",
                 birthday: {
-                    day: 2,
-                    month: 2,
-                    year: 2022,
+                    day: 4,
+                    month: 4,
+                    year: 2024,
                 },
             })
 
-            const updatedAthlete = await repository.update(athleteToUpdate);
+            let updatedAthlete = await repository.update(athleteToUpdate);
 
-            expect(updatedAthlete).toStrictEqual(athleteToUpdate)
-            await expect(repository.count()).resolves.toBe(1)
+            let updatedAthletes = await repository.findAll()
+
+            expect(updatedAthlete).toStrictEqual(updatedAthletes[0])
+            await expect(repository.count()).resolves.toBe(3)
+
+            athleteToUpdate = new Athlete({
+                id: athletes[1].id,
+                name: "Updated Athlete 2",
+                country: "Updated Country 2",
+                birthday: {
+                    day: 4,
+                    month: 4,
+                    year: 2024,
+                },
+            })
+
+            updatedAthlete = await repository.update(athleteToUpdate);
+
+            updatedAthletes = await repository.findAll()
+
+            expect(updatedAthlete).toStrictEqual(updatedAthletes[1])
+            await expect(repository.count()).resolves.toBe(3)
+
+            athleteToUpdate = new Athlete({
+                id: athletes[2].id,
+                name: "Updated Athlete 3",
+                country: "Updated Country 3",
+                birthday: {
+                    day: 4,
+                    month: 4,
+                    year: 2024,
+                },
+            })
+
+            updatedAthlete = await repository.update(athleteToUpdate);
+
+            updatedAthletes = await repository.findAll()
+
+            expect(updatedAthlete).toStrictEqual(updatedAthletes[2])
+            await expect(repository.count()).resolves.toBe(3)
         })
 
         it("should not update an athlete given an invalid id", async () => {
