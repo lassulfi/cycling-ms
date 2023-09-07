@@ -1,6 +1,6 @@
-import { Birthday } from "../../../domain/@shared/value-objects/birthday"
-import { AthleteID } from "../../../domain/athlete/entity/athlete.id"
-import { TeamID } from "../../../domain/team/entity/team.id"
+import { Birthday } from "../../../domain/@shared/value-objects/birthday.js"
+import { AthleteID } from "../../../domain/athlete/entity/athlete.id.js"
+import { TeamID } from "../../../domain/team/entity/team.id.js"
 
 export class UpdateAthleteUseCase {
     #athleteRepository
