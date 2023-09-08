@@ -8,9 +8,9 @@ import AthleteController from "../../../internal/ports/http/athlete/athlete.cont
 
 const athleteRepository = new AthleteRepository()
 
-const createAthleteUseCase = new CreateAthleteUseCase({athleteRepository})
-const getAthleteUseCase = new GetAthleteUseCase({athleteRepository})
-const updateAthleteUseCase = new UpdateAthleteUseCase({athleteRepository})
+const createAthleteUseCase = new CreateAthleteUseCase({ athleteRepository })
+const getAthleteUseCase = new GetAthleteUseCase({ athleteRepository })
+const updateAthleteUseCase = new UpdateAthleteUseCase({ athleteRepository })
 
 const athleteController = new AthleteController({
     createAthleteUseCase,
@@ -18,9 +18,12 @@ const athleteController = new AthleteController({
     updateAthleteUseCase
 })
 
-export const athleteRouter = express.Router()
+const athleteRouter = express.Router()
 
-athleteRouter.post("/", athleteController.create)
-athleteRouter.get("/:id", athleteController.getById)
-athleteRouter.put("/:id", athleteController.update)
+athleteRouter.post("/", async (req, res) => {
+    await athleteController.create(req, res)
+})
+athleteRouter.get("/:id", async (req, res) => { await athleteController.getById(req, res) })
+athleteRouter.put("/:id", async (req, res) => { await athleteController.update(req, res) })
 
+export default athleteRouter;
