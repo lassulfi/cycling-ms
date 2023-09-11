@@ -5,12 +5,14 @@ import { CreateAthleteUseCase } from "../../../internal/usecase/athlete/create/c
 import { GetAthleteUseCase } from "../../../internal/usecase/athlete/retrieve/get/get.athlete.usecase.js"
 import { UpdateAthleteUseCase } from "../../../internal/usecase/athlete/update/update.athlete.usecase.js"
 import AthleteController from "../../../internal/ports/http/athlete/athlete.controller.js"
+import { TeamRepository } from "../../repository/local/team/team.repository.js"
 
 const athleteRepository = new AthleteRepository()
+const teamRepository = new TeamRepository()
 
 const createAthleteUseCase = new CreateAthleteUseCase({ athleteRepository })
 const getAthleteUseCase = new GetAthleteUseCase({ athleteRepository })
-const updateAthleteUseCase = new UpdateAthleteUseCase({ athleteRepository })
+const updateAthleteUseCase = new UpdateAthleteUseCase({ athleteRepository, teamRepository })
 
 const athleteController = new AthleteController({
     createAthleteUseCase,
@@ -20,9 +22,7 @@ const athleteController = new AthleteController({
 
 const athleteRouter = express.Router()
 
-athleteRouter.post("/", async (req, res) => {
-    await athleteController.create(req, res)
-})
+athleteRouter.post("/", async (req, res) => { await athleteController.create(req, res) })
 athleteRouter.get("/:id", async (req, res) => { await athleteController.getById(req, res) })
 athleteRouter.put("/:id", async (req, res) => { await athleteController.update(req, res) })
 

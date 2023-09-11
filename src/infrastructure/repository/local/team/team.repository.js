@@ -17,6 +17,18 @@ export class TeamRepository {
         })
     }
 
+    findOne({id}) {
+        return new Promise((resolve, reject) => {
+            try {
+                const team = this.#teamDB.find(t => t.id.getValue() === id.getValue())
+
+                resolve(team)
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
     count() {
         return new Promise((resolve, reject) => {
             try {

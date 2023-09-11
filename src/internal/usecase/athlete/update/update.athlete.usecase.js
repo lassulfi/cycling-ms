@@ -16,18 +16,15 @@ export class UpdateAthleteUseCase {
 
         try {
             const athlete = await this.#athleteRepository.findOne({id: AthleteID.from(id)})
-            
-            if (!athlete) {
-                throw new Error(`Athlete ID "${id}" not found`)
-            }
-
-            const team = await this.#teamRepository.findOne({id: TeamID.from(teamId)})
-
             athlete
                 .changeName(name ?? athlete.name)
                 .changeCountry(country ?? athlete.country)
-                .changeBirthday(Birthday.newBirthday(birthday) ?? athlete.birthday)
-                .changeTeam(team ?? athlete.team)
+                .changeBirthday(birthday ? Birthday.newBirthday(birthday) : athlete.birthday)
+
+            if (teamId) {
+                const team = await this.#teamRepository.findOne({id: TeamID.from(teamId)})
+                athlete.changeTeam(team ?? athlete.team)
+            }
 
             await this.#athleteRepository.update(athlete)
 
@@ -37,8 +34,8 @@ export class UpdateAthleteUseCase {
                 country: athlete.country,
                 birthday: athlete.birthday.date,
                 team: {
-                    id: athlete.team.id.getValue(),
-                    name: athlete.team.name,
+                    id: athlete?.team?.id?.getValue(),
+                    name: athlete?.team?.name,
                 }
             }
         } catch (error) {

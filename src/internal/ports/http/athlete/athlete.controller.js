@@ -34,16 +34,22 @@ export default class AthleteController {
     }
 
     async update(request, response) {
-        const { id } = request.params
-        const body = request.body
-
-        const input = {
-            id,
-            ...body
+        try {
+            const { id } = request.params
+            const body = request.body
+    
+            const input = {
+                id,
+                ...body
+            }
+    
+            const output = await this.#updateAthleteUseCase.execute(input)
+    
+            return response.json(output)
+        } catch (err) {
+            return response.status(404).json({
+                error: err.message
+            })
         }
-
-        const output = await this.#updateAthleteUseCase.execute(input)
-
-        return response.json(output)
     }
 }

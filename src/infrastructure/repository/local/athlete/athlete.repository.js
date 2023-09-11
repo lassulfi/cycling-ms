@@ -17,45 +17,35 @@ export class AthleteRepository {
         })
     }
 
-    findOne({id}) {
+    findOne({ id }) {
         return new Promise((resolve, reject) => {
             try {
-                const athletesById = this.#listAthletesById(id)
+                const entity = this.#athleteDB.find(a => a.id.getValue() === id.getValue())
+                if (!entity) throw new Error(`Athlete ID "${id.getValue()}" not found`)
 
-                resolve(athletesById[0])
+                resolve(entity)
             } catch (error) {
                 reject(error)
             }
         })
     }
 
-    #listAthletesById(id) {
-        console.log(id.getValue())
-
-        const athletesById = this.#athleteDB.filter(a => a.id.getValue() === id.getValue())
-
-        if (!athletesById.length) throw new Error(`Athlete ID "${id.getValue()}" not found`)
-        return athletesById
-    }
-
     update(athlete) {
         return new Promise((resolve, reject) => {
-            try {
-                const athletesById = this.#listAthletesById(athlete.id)
+            this.findOne({ id: athlete.id })
+                .then(entity => {
+                    entity.changeName(athlete.name)
+                        .changeCountry(athlete.country)
+                        .changeBirthday(athlete.birthday)
+                        .changeTeam(athlete.team)
 
-                const entity = athletesById[0];
-                entity.changeName(athlete.name)
-                            .changeCountry(athlete.country)
-                            .changeBirthday(athlete.changeBirthday)
-                            .changeTeam(athlete.team)
+                    const index = this.#athleteDB.indexOf(entity)
+                    this.#athleteDB[index] = entity
 
-                const index = this.#athleteDB.indexOf(entity)
-                this.#athleteDB[index] = entity
-
-                resolve(entity)
-            } catch (error) {
-                reject(error)
-            }
+                    resolve(entity)
+                }).catch(error => {
+                    reject(error)
+                })
         })
     }
 
