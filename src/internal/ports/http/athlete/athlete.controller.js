@@ -1,9 +1,11 @@
+import { AthleteID } from "../../../domain/athlete/entity/athlete.id"
+
 export default class AthleteController {
     #createAthleteUseCase
     #getAthleteUseCase
     #updateAthleteUseCase
 
-    constructor({createAthleteUseCase, getAthleteUseCase, updateAthleteUseCase}) {
+    constructor({ createAthleteUseCase, getAthleteUseCase, updateAthleteUseCase }) {
         this.#createAthleteUseCase = createAthleteUseCase
         this.#getAthleteUseCase = getAthleteUseCase
         this.#updateAthleteUseCase = updateAthleteUseCase
@@ -20,9 +22,9 @@ export default class AthleteController {
     async getById(request, response) {
         try {
             const { id } = request.params
-    
-            const output = await this.#getAthleteUseCase.execute({ id })
-    
+
+            const output = await this.#getAthleteUseCase.execute({ id: AthleteID.from(id) })
+
             return response.json(output)
         } catch (err) {
             return response.status(404).json({

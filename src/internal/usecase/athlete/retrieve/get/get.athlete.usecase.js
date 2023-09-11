@@ -9,15 +9,15 @@ export class GetAthleteUseCase {
         let output
 
         try {
-            const athlete = await this.#athleteRepository.findOne({ id: anId })
+            const athlete = await this.#athleteRepository.findOne({ id:anId })
 
-            const {id, name, country, birthday } = athlete
+            const {id, name, country, birthday: { date } } = athlete
 
             output = {
                 id: id.getValue(),
                 name,
                 country,
-                birthday: birthday.date
+                birthday: date
             }
         } catch (error) {
             throw new Error(`Error retrieving athlete with ID "${anId.getValue()}": ${error.message}`)

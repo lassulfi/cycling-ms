@@ -30,7 +30,9 @@ export class AthleteRepository {
     }
 
     #listAthletesById(id) {
-        const athletesById = this.#athleteDB.filter(a => a.id === id)
+        console.log(id.getValue())
+
+        const athletesById = this.#athleteDB.filter(a => a.id.getValue() === id.getValue())
 
         if (!athletesById.length) throw new Error(`Athlete ID "${id.getValue()}" not found`)
         return athletesById

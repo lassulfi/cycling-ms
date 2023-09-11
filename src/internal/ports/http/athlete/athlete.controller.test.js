@@ -1,5 +1,6 @@
 import { jest, describe, it, expect, beforeEach, afterEach } from "@jest/globals"
 import AthleteController from "./athlete.controller.js"
+import { AthleteID } from "../../../domain/athlete/entity/athlete.id.js"
 
 const UseCaseMock = () => ({
     execute: jest.fn()
@@ -9,9 +10,9 @@ let createAthleteUseCase, getAthleteUseCase, updateAthleteUseCase
 
 const mockResponse = {
     json: jest.fn(),
-    status: jest.fn(function(code) {
+    status: jest.fn(function (code) {
         this.statusCode = code
-        
+
         return this
     })
 }
@@ -35,7 +36,7 @@ describe("# Athlete controller unit tests", () => {
                 updateAthleteUseCase
             })
 
-            const input =  {
+            const input = {
                 name: "Athlete",
                 country: "Country",
                 birthday: {
@@ -45,7 +46,7 @@ describe("# Athlete controller unit tests", () => {
                 }
             }
 
-            const output = {id: "123"}
+            const output = { id: "123" }
 
             const mockRequest = {
                 body: input
@@ -96,7 +97,7 @@ describe("# Athlete controller unit tests", () => {
             await controller.getById(mockRequest, mockResponse)
 
             expect(createSpy).not.toBeCalled()
-            expect(getSpy).toHaveBeenCalledWith(input)
+            expect(getSpy).toHaveBeenCalledWith({ id: AthleteID.from(input.id) })
             expect(updateSpy).not.toBeCalled()
             expect(responseJsonSpy).toHaveBeenCalledWith(output)
         })
@@ -124,7 +125,7 @@ describe("# Athlete controller unit tests", () => {
             await controller.getById(mockRequest, mockResponse)
 
             expect(createSpy).not.toBeCalled()
-            expect(getSpy).toHaveBeenCalledWith(input)
+            expect(getSpy).toHaveBeenCalledWith({ id: AthleteID.from(input.id) })
             expect(updateSpy).not.toBeCalled()
             expect(responseJsonSpy).toHaveBeenCalledWith({
                 error: `Error retrieving athlete with ID "${input.id}": Athlete not found`
@@ -143,7 +144,7 @@ describe("# Athlete controller unit tests", () => {
 
             const id = "123"
 
-            const input =  {
+            const input = {
                 name: "Athlete",
                 country: "Country",
                 birthday: {
@@ -154,7 +155,7 @@ describe("# Athlete controller unit tests", () => {
                 teamId: "234"
             }
 
-            const output =  {
+            const output = {
                 id,
                 name: "Athlete",
                 country: "Country",
@@ -166,7 +167,7 @@ describe("# Athlete controller unit tests", () => {
             }
 
             const mockRequest = {
-                params: {id},
+                params: { id },
                 body: input
             }
 
@@ -180,7 +181,7 @@ describe("# Athlete controller unit tests", () => {
 
             expect(createSpy).not.toBeCalled()
             expect(getSpy).not.toBeCalled()
-            expect(updateSpy).toHaveBeenCalledWith({id, ...input})
+            expect(updateSpy).toHaveBeenCalledWith({ id, ...input })
             expect(responseJsonSpy).toHaveBeenCalledWith(output)
         })
     })
