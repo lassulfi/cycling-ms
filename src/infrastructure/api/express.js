@@ -1,6 +1,6 @@
 import express from "express";
 import athleteRouter from "./routes/athlete.routes.js";
-import { teamRouter } from "./routes/team.routes.js";
+import teamRouter from "./routes/team.routes.js"
 
 const app = express()
 

@@ -7,29 +7,25 @@ export class CreateTeamUseCase {
     constructor({ teamRepository, athleteRepository }) {
         this.#teamRepository = teamRepository
         this.#athleteRepository = athleteRepository
-    }   
+    }
 
     async execute({ name, athletesId }) {
         let output
         try {
             const team = TeamFactory.newTeam(name)
-    
-            if (athletesId.length) {
-                const athletes = await Promise.all(athletesId.map(id => this.#athleteRepository.findOne({id})))
-                
+
+            if (athletesId) {
+                const athletes = await Promise.all(athletesId.map(id => this.#athleteRepository.findOne({ id })))
+
                 for (const athlete of athletes) {
-                    try {
-                        athlete.changeTeam(team)
-                        
-                        await this.#athleteRepository.update(athlete)
-                        
-                        team.addAthlete(athlete)
-                    } catch (error) {
-                        throw error
-                    }
+                    athlete.changeTeam(team)
+
+                    await this.#athleteRepository.update(athlete)
+
+                    team.addAthlete(athlete)
                 }
             }
-            
+
             await this.#teamRepository.create(team)
 
             output = {
