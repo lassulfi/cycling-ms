@@ -1,3 +1,4 @@
+import { AthleteID } from "../../../domain/athlete/entity/athlete.id.js"
 import { TeamFactory } from "../../../domain/team/factory/team.factory.js"
 
 export class CreateTeamUseCase {
@@ -15,7 +16,7 @@ export class CreateTeamUseCase {
             const team = TeamFactory.newTeam(name)
 
             if (athletesId) {
-                const athletes = await Promise.all(athletesId.map(id => this.#athleteRepository.findOne({ id })))
+                const athletes = await Promise.all(athletesId.map(id => this.#athleteRepository.findOne({ id: AthleteID.from(id) })))
 
                 for (const athlete of athletes) {
                     athlete.changeTeam(team)

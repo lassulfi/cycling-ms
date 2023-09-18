@@ -1,0 +1,365 @@
+{
+	"info": {
+		"_postman_id": "835c581b-df15-411f-b68e-78553a6375a1",
+		"name": "cycling-ms",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "athletes",
+			"item": [
+				{
+					"name": "create athlete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code should de 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type should be application/json\", function () {\r",
+									"    const headers = pm.response.headers.all();\r",
+									"    const {value: contentType} = headers.filter(header => header.key === \"Content-Type\")[0];\r",
+									"    pm.expect(contentType).to.include(\"application/json\")\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should have a valid schema\", function() {\r",
+									"    const expectedSchema = {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"            \"id\": {\r",
+									"            \"type\": \"string\"\r",
+									"            }\r",
+									"        },\r",
+									"        \"required\": [\r",
+									"            \"id\"\r",
+									"        ]\r",
+									"    }\r",
+									"\r",
+									"    pm.response.to.have.jsonSchema(expectedSchema)\r",
+									"})\r",
+									"\r",
+									"const setAthelteId = function() {\r",
+									"    const { id } = pm.response.json()\r",
+									"    pm.collectionVariables.set(\"athlete-id\", id)\r",
+									"}\r",
+									"\r",
+									"setAthelteId();\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Mark Canvedish\",\r\n    \"country\": \"Ilha de Man\",\r\n    \"birthday\": {\r\n        \"day\": 21,\r\n        \"month\": 5,\r\n        \"year\": 1985\r\n    },\r\n    \"teamId\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3333/athletes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"athletes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find atlhete by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code should de 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type should be application/json\", function () {\r",
+									"    const headers = pm.response.headers.all();\r",
+									"    const {value: contentType} = headers.filter(header => header.key === \"Content-Type\")[0];\r",
+									"    pm.expect(contentType).to.include(\"application/json\")\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should have a valid schema\", function() {\r",
+									"    const expectedSchema = {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"            \"id\": {\r",
+									"            \"type\": \"string\"\r",
+									"            },\r",
+									"            \"name\": {\r",
+									"            \"type\": \"string\"\r",
+									"            },\r",
+									"            \"country\": {\r",
+									"            \"type\": \"string\"\r",
+									"            },\r",
+									"            \"birthday\": {\r",
+									"            \"type\": \"string\"\r",
+									"            }\r",
+									"        },\r",
+									"        \"required\": [\r",
+									"            \"id\",\r",
+									"            \"name\",\r",
+									"            \"country\",\r",
+									"            \"birthday\"\r",
+									"        ]\r",
+									"    }\r",
+									"\r",
+									"    pm.response.to.have.jsonSchema(expectedSchema)\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3333/athletes/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"athletes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{athlete-id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update athlete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code should de 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type should be application/json\", function () {\r",
+									"    const headers = pm.response.headers.all();\r",
+									"    const {value: contentType} = headers.filter(header => header.key === \"Content-Type\")[0];\r",
+									"    pm.expect(contentType).to.include(\"application/json\")\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should have a valid schema\", function() {\r",
+									"    const expectedSchema = {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"            \"id\": {\r",
+									"                \"type\": \"string\"\r",
+									"            },\r",
+									"            \"name\": {\r",
+									"                \"type\": \"string\"\r",
+									"            },\r",
+									"            \"country\": {\r",
+									"                \"type\": \"string\"\r",
+									"            },\r",
+									"            \"birthday\": {\r",
+									"            \"type\": \"string\"\r",
+									"            },\r",
+									"            \"team\": {\r",
+									"                \"type\": \"object\",\r",
+									"                \"properties\": {\r",
+									"                    \"id\": {\r",
+									"                    \"type\": \"string\"\r",
+									"                    },\r",
+									"                    \"name\": {\r",
+									"                    \"type\": \"string\"\r",
+									"                    }\r",
+									"                },\r",
+									"            }\r",
+									"        },\r",
+									"        \"required\": [\r",
+									"            \"id\",\r",
+									"            \"name\",\r",
+									"            \"country\",\r",
+									"            \"birthday\",\r",
+									"            \"team\"\r",
+									"        ]\r",
+									"    }\r",
+									"\r",
+									"    pm.response.to.have.jsonSchema(expectedSchema)\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Mark Canvedish\",\r\n    \"country\": \"Isle of Man\",\r\n    \"birthday\": {\r\n        \"day\": 21,\r\n        \"month\": 5,\r\n        \"year\": 1985\r\n    },\r\n    \"teamId\": \"{{team-id}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3333/athletes/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"athletes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{athlete-id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "teams",
+			"item": [
+				{
+					"name": "create teams",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code should de 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type should be application/json\", function () {\r",
+									"    const headers = pm.response.headers.all();\r",
+									"    const {value: contentType} = headers.filter(header => header.key === \"Content-Type\")[0];\r",
+									"    pm.expect(contentType).to.include(\"application/json\")\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should have a valid schema\", function() {\r",
+									"    const expectedSchema = {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"            \"id\": {\r",
+									"            \"type\": \"string\"\r",
+									"            }\r",
+									"        },\r",
+									"        \"required\": [\r",
+									"            \"id\"\r",
+									"        ]\r",
+									"    }\r",
+									"\r",
+									"    pm.response.to.have.jsonSchema(expectedSchema)\r",
+									"})\r",
+									"\r",
+									"const setTeamId = function() {\r",
+									"    const { id } = pm.response.json()\r",
+									"    pm.collectionVariables.set(\"team-id\", id)\r",
+									"}\r",
+									"\r",
+									"setTeamId();\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Astana\",\r\n    \"athletesId\": [\"{{athlete-id}}\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3333/teams",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"teams"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "athlete-id",
+			"value": "cafbe9c3-afec-44e3-ae65-55d351907ff4",
+			"type": "string"
+		},
+		{
+			"key": "team-id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
