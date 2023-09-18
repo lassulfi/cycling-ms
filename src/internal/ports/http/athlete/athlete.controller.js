@@ -1,4 +1,4 @@
-import { AthleteID } from "../../../domain/athlete/entity/athlete.id"
+import { AthleteID } from "../../../domain/athlete/entity/athlete.id.js"
 
 export default class AthleteController {
     #createAthleteUseCase

@@ -4,11 +4,20 @@ import { AthleteFactory } from "../../../../internal/domain/athlete/factory/athl
 import { AthleteID } from "../../../../internal/domain/athlete/entity/athlete.id.js";
 import { Athlete } from "../../../../internal/domain/athlete/entity/athlete.js";
 import { TeamID } from "../../../../internal/domain/team/entity/team.id.js";
-
 describe("# Athlete repository unit tests", () => {
+    let _athlete
+    describe("# singleton instance tests", () => {
+        it("should create a singleton instance", () => {
+            const instance1 = AthleteRepository.getInstance();
+            const instance2 = AthleteRepository.getInstance();
+
+            expect(instance2).toStrictEqual(instance1);
+        })
+    })
+
     describe("# create method unit tests", () => {
         it("should create an athlete", async () => {
-            const repository = new AthleteRepository()
+            const repository = AthleteRepository.getInstance();
 
             const athlete = AthleteFactory.newAthlete({
                 name: "Athlete 1",
@@ -24,48 +33,22 @@ describe("# Athlete repository unit tests", () => {
 
             expect(result).toStrictEqual(athlete)
             await expect(repository.count()).resolves.toBe(1)
+            
+            _athlete = result;
         })
     })
 
     describe("# findOne method unit tests", () => {
         it("should return an athlete", async () => {
-            const repository = new AthleteRepository()
+            const repository = AthleteRepository.getInstance()
 
-            const athlete = AthleteFactory.newAthlete({
-                name: "Athlete 1",
-                country: "Country 1",
-                birthday: {
-                    day: 1,
-                    month: 1,
-                    year: 2023,
-                },
-            })
-
-            await repository.create(athlete)
-
-            await expect(repository.count()).resolves.toBe(1)
-
-            const result = await repository.findOne({ id: athlete.id })
-            expect(result).toStrictEqual(athlete)
+            const result = await repository.findOne({ id: _athlete.id })
+            expect(result).toStrictEqual(_athlete)
         })
     })
 
     it("should not return an athlete given an invalid id", async () => {
-        const repository = new AthleteRepository()
-
-        const athlete = AthleteFactory.newAthlete({
-            name: "Athlete 1",
-            country: "Country 1",
-            birthday: {
-                day: 1,
-                month: 1,
-                year: 2023,
-            },
-        })
-
-        await repository.create(athlete)
-
-        await expect(repository.count()).resolves.toBe(1)
+        const repository = AthleteRepository.getInstance()
 
         await expect(repository.findOne({ id: AthleteID.from("123") })).rejects.toThrow('Athlete ID "123" not found')
     })
@@ -75,15 +58,6 @@ describe("# Athlete repository unit tests", () => {
             const repository = new AthleteRepository()
 
             const athletes = [
-                AthleteFactory.newAthlete({
-                    name: "Athlete 1",
-                    country: "Country 1",
-                    birthday: {
-                        day: 1,
-                        month: 1,
-                        year: 2021,
-                    },
-                }),
                 AthleteFactory.newAthlete({
                     name: "Athlete 2",
                     country: "Country 2",
@@ -111,7 +85,7 @@ describe("# Athlete repository unit tests", () => {
             await expect(repository.count()).resolves.toBe(3)
 
             let athleteToUpdate = new Athlete({
-                id: athletes[0].id,
+                id: _athlete.id,
                 name: "Updated Athlete 1",
                 country: "Updated Country 1",
                 birthday: {
@@ -129,7 +103,7 @@ describe("# Athlete repository unit tests", () => {
             await expect(repository.count()).resolves.toBe(3)
 
             athleteToUpdate = new Athlete({
-                id: athletes[1].id,
+                id: athletes[0].id,
                 name: "Updated Athlete 2",
                 country: "Updated Country 2",
                 birthday: {
@@ -147,7 +121,7 @@ describe("# Athlete repository unit tests", () => {
             await expect(repository.count()).resolves.toBe(3)
 
             athleteToUpdate = new Athlete({
-                id: athletes[2].id,
+                id: athletes[1].id,
                 name: "Updated Athlete 3",
                 country: "Updated Country 3",
                 birthday: {
@@ -166,21 +140,7 @@ describe("# Athlete repository unit tests", () => {
         })
 
         it("should not update an athlete given an invalid id", async () => {
-            const repository = new AthleteRepository()
-
-            const athlete = AthleteFactory.newAthlete({
-                name: "Athlete 1",
-                country: "Country 1",
-                birthday: {
-                    day: 1,
-                    month: 1,
-                    year: 2023,
-                },
-            })
-
-            await repository.create(athlete)
-
-            await expect(repository.count()).resolves.toBe(1)
+            const repository = AthleteRepository.getInstance()
 
             const athleteToUpdate = new Athlete({
                 id: TeamID.from("123"),
@@ -194,7 +154,7 @@ describe("# Athlete repository unit tests", () => {
             })
 
             await expect(repository.update(athleteToUpdate)).rejects.toThrow('Athlete ID "123" not found')
-            await expect(repository.count()).resolves.toBe(1)
+            await expect(repository.count()).resolves.toBe(3)
         })
     })
 })

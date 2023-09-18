@@ -1,8 +1,22 @@
 export class AthleteRepository {
+    #instance
     #athleteDB
 
     constructor() {
+        if(AthleteRepository.instance) {
+            return AthleteRepository.instance
+        }
+
         this.#athleteDB = []
+        AthleteRepository.instance = this;
+    }
+
+    static getInstance() {
+        if (!AthleteRepository.instance) {
+            AthleteRepository.instance = new AthleteRepository();
+        }
+
+        return AthleteRepository.instance;
     }
 
     create(athlete) {

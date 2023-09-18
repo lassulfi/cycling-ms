@@ -2,7 +2,20 @@ export class TeamRepository {
     #teamDB
 
     constructor() {
+        if (TeamRepository.instance) {
+            return TeamRepository.instance
+        }
+
         this.#teamDB = []
+        TeamRepository.instance = this;
+    }
+
+    static getInstance() {
+        if(!TeamRepository.instance) {
+            TeamRepository.instance = new TeamRepository()
+        }
+
+        return TeamRepository.instance;
     }
 
     create(team) {

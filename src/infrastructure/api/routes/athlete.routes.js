@@ -7,8 +7,8 @@ import { UpdateAthleteUseCase } from "../../../internal/usecase/athlete/update/u
 import AthleteController from "../../../internal/ports/http/athlete/athlete.controller.js"
 import { TeamRepository } from "../../repository/local/team/team.repository.js"
 
-const athleteRepository = new AthleteRepository()
-const teamRepository = new TeamRepository()
+const athleteRepository = AthleteRepository.getInstance()
+const teamRepository = TeamRepository.getInstance()
 
 const createAthleteUseCase = new CreateAthleteUseCase({ athleteRepository })
 const getAthleteUseCase = new GetAthleteUseCase({ athleteRepository })
