@@ -1,0 +1,7 @@
+node_modules/
+
+converage/
+
+postman/
+
+npm-debug.log
