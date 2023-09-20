@@ -1,0 +1,22 @@
+name: ci-cycling-ms-workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build-and-deploy-develop:
+    runs-on: ubunbu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup Node.js ${{matrix.node-version}}
+        uses: actions/setup-node@v2
