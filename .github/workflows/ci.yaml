@@ -1,0 +1,60 @@
+name: ci-cycling-ms-workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build-and-deploy-develop:
+    runs-on: ubunbu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v2
+      
+      - run: npm ci
+        name: Install dependencies
+       
+      - run: npm test
+        name: Run tests
+  
+  build-and-deploy-main:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v2
+
+      - run: npm ci
+        name: Install dependencies
+       
+      - run: npm test
+        name: Run tests
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Setup Docker Builx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Dockerhub login
+        uses: docker/login-action@v2
+        with:
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
+      
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: lassulfi/cycling-ms:latest
