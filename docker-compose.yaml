@@ -1,0 +1,158 @@
+version: '3.7'
+
+services:
+
+  ###
+  ### Banco de dados
+  ### Nesse momento estamos usando o modelo de deployment com banco de dados, o que indica
+  ### que as configuracoes a.k.a rotas,servicos e plugins ficam persistidas nele
+  ###
+  kong-database:
+    image: postgres:9.5
+    deploy:
+      restart_policy:
+        condition: any
+    networks:
+      - kong-cycling
+    environment:
+      - POSTGRES_USER=kong
+      - POSTGRES_DB=kong
+      - POSTGRES_PASSWORD=kong
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "kong"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Criação das tabelas do banco de dados para armazenar
+  # as configurações do kong
+  kong-migration-bootstrap:
+    image: lassulfi/kong
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - kong-cycling
+    depends_on:
+      - kong-database
+    environment:
+      - KONG_DATABASE=postgres
+      - KONG_PG_HOST=kong-database
+      - KONG_PG_USER=kong
+      - KONG_PG_PASSWORD=kong
+    command: ["kong", "migrations", "bootstrap"]
+
+  # Realiza as migrations das tabelas do kong
+  kong-migration-up:
+    image: lassulfi/kong
+    networks:
+      - kong-cycling
+    deploy:
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - kong-database
+    environment:
+      - KONG_DATABASE=postgres
+      - KONG_PG_HOST=kong-database
+      - KONG_PG_USER=kong
+      - KONG_PG_PASSWORD=kong
+    command: ["kong", "migrations", "up"]
+
+  # Container do KONG API Gateway
+  kong:
+    container_name: kong
+    image: lassulfi/kong
+    networks:
+      - kong-cycling
+    deploy:
+      restart_policy:
+        condition: any
+    depends_on:
+      - kong-database
+    environment:
+      - KONG_DATABASE=postgres
+      - KONG_PG_HOST=kong-database
+      - KONG_PG_DATABASE=kong
+      - KONG_PG_PASSWORD=kong
+      - KONG_PROXY_ACCESS_LOG=/dev/stdout
+      - KONG_ADMIN_ACCESS_LOG=/dev/stdout
+      - KONG_PROXY_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
+      - KONG_PROXY_LISTEN=0.0.0.0:8000, 0.0.0.0:8443 ssl http2
+      - KONG_ADMIN_LISTEN=0.0.0.0:8001
+      - KONG_REAL_IP_RECURSIVE=on
+      - KONG_NGINX_HTTP_RESOLVER=8.8.8.8
+      - KONG_PLUGINS=bundled
+    ports:
+      - "80:8000"
+      - "443:8443"
+      - "8001:8001"
+    healthcheck:
+      test: ["CMD", "wget", "-O-", "http://kong:8001/status"]
+      interval: 5s
+      retries: 10
+    restart: on-failure
+
+  # Cycling MS
+  # Microsserviço de cadastro de equipes de ciclismo
+  cycling-ms:
+    image: lassulfi/cycling-ms
+    networks:
+      - kong-cycling
+    ports:
+      - 3333:3333
+    deploy:
+      restart_policy:
+        condition: on-failure
+  
+  # Banco de dados postgres para o keycloak
+  postgres:
+    image: postgres
+    volumes:
+      - .docker/keycloak/postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:legacy
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: Pa55w0rd
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+  
+  # Konga
+  # Administracao via interface grafica do Kong API Gateway
+  konga:
+    image: pantsel/konga
+    networks:
+      - kong-cycling
+    deploy:
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - kong-database
+    environment:
+      NODE_ENV: development
+    ports:
+      - "1337:1337"
+
+networks:
+  kong-cycling:
+    external: false
+
+volumes:
+  postgres_data:
+    driver: local
