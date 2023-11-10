@@ -35,8 +35,8 @@ describe("# Create team use case unit tests", () => {
         ]
 
         const findOneAthleteSpy = jest.spyOn(athleteRepository, "findOne").mockImplementation(({id}) => {
-            if (id === "123") return athletes[0]
-            if (id === "234") return athletes[1]
+            if (id.getValue() === "123") return athletes[0]
+            if (id.getValue() === "234") return athletes[1]
         })
 
         const updateAthleteSpy = jest.spyOn(athleteRepository, "update")
@@ -66,8 +66,8 @@ describe("# Create team use case unit tests", () => {
         ]
 
         const findOneAthleteSpy = jest.spyOn(athleteRepository, "findOne").mockImplementation(({id}) => {
-            if (id === "123") return athletes[0]
-            if (id === "234") return athletes[1]
+            if (id.getValue() === "123") return athletes[0]
+            if (id.getValue() === "234") return athletes[1]
         })
 
         const updateAthleteSpy = jest.spyOn(athleteRepository, "update")
