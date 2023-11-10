@@ -1,0 +1,116 @@
+Configuração do Konga
+
+1. Acesse o konga em http://localhost:1337
+
+2. Configurar a API administrativa do Kong
+    2.1 Name: local
+    2.2 Kong Admin URL: http://kong:8001
+
+Cadastro de um serviço (Services)
+
+Ir em Services -> Add New Service
+
+Preencher as seguintes informações:
+    - Name: cycling-ms
+    - Description: Gerenciamento de equipes de ciclismo
+    - Tag: time-cycling # A Tag serve para organizar o serviço no kong
+    - Url (upstream): http://cycling-ms:3333
+    - Connect timeout: 10000 (milisegundos)
+    - Write timeout: 10000 (milisegundos)
+    - Read timeout: 10000 (milisegundos)
+
+Cadastro das rotas (Routes)
+
+Preencher as seguintes informações:
+
+O cadastro de rotas é feito pelo serviço. Vá em Services -> cycling-ms -> Routes -> Add Routes
+
+Informar os seguintes parametros:
+    - Name: criar_atleta
+    - Tag: time-cycling
+    - Hosts: cycling-app.com.br (aperte ENTER para confirmar o valor)
+    - Path: /api/cycling (aperte ENTER para confirmar o valor)
+    - Method: POST (aperte ENTER para confirmar o valor)
+    - Strip Path: YES
+
+Configuração de Plugins
+
+Plugin é um pedaço de código que pode ser executado dentro de um ciclo de vida de uma requisição HTTP.
+O plugin é executado tanto na fase de request como no response
+
+No Kong, os plugins podem ser configurados nas Rotas, Serviços, Consumers e de forma Global
+
+Os plugins podem ser escritos em Lua, JavaScript e Golang.
+
+- Correlation ID
+
+1. Acessar o Kong Plugin Hub (https://docs.konghq.com/hub/) e pesquisar por Correlation ID
+2. Como o Correlation ID será habilitado em todas as requisições, vá em Plugins => Add Global Plugin
+3. Vá em Transformations, procure o plugin de correlation ID e clique em Add Plugin
+4. Alterar as seguitnes configurações:
+    - Header name: Request-ID
+    - generator: uuid
+    - echo downstream: YES
+    - Clique em Add Plugin
+
+- Rate Limiting
+
+1. Acessar o Kong Plugin Hub (https://docs.konghq.com/hub/) e pesquisar por Rate Limiting
+2. Como o plugin de Rate Limiting será habilitado somente no serviço, será necessário acessar o service cycling-ms
+3. Clique em Plugins => Add Plugin
+4. Selecione Traffic Control => Rate Limiting
+5. Infomar 5 requests por minuto
+6. Selecionar Limit By => IP
+7. Selecionar Pollicy => Local
+8. Selecionar Hide Clients Header => YES
+
+- Response Transformer
+
+O kong suporta dois tipos de transformação: uma antes de enviar para o upstream e outro no response.
+
+1. Acessar o Kong Plugin Hub (https://docs.konghq.com/hub/) e pesquisar por Response Transformer
+2. Como o plugin será habilitado somente no serviço, será necessário acessar o service cycling-ms
+3. Clique em Plugins => Add Plugin
+4. Selecione Transformation => Response Transformer
+5. Vá em add => headers e adicione api:ciclyng e aperte ENTER
+5. Vá em add => json e adicione proxied:by_kong e aperte ENTER
+
+Consumers
+
+Um consumer pode ser um usuário ou serviço. Esse consumer pode ser utilizado para aplicar plugins de segurança
+
+Criar um usuário final 
+1 - Vá em Consumers e clique em Create Consumers
+2 - Informe um username
+3 - Informe a tag user
+
+Criar um APP
+1 - Vá em Consumers e clique em Create Consumers
+2 - Informe um username app-teams
+3 - Informe a tag app
+
+Criar uma credencial
+1 - Selecione o seu usuario
+2 - Clique em Create Credentials
+3 - Informe o seu username e password
+
+1 - Selecione o app-teams
+2 - Clique em Create Credentials
+3 - Selecione API KEYS
+4 - Clique em Create API Key
+
+Plugin de Basic Auth
+
+1. Vá em service e selecione cycling-ms
+2. Clique em Plugins => Add Plugin
+3. Selecione Authentication => Basic Auth
+4. Clique em Add Plugin
+
+Plugin de Key Authentication
+
+1. Vá em service e selecione cycling-ms
+2. Clique em Plugins => Add Plugin
+3. Selecione Authentication => Key Auth
+4. Em key names digite api-key e pressione ENTER
+5. Em key in header selecione NO
+OBS.: É necessário remover o plugin Basic Auth
